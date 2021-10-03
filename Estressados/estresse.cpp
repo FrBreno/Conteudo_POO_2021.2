@@ -5,7 +5,7 @@
 //Busca:
 bool existe(std::vector<int> fila, int x)
 {
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] == x)
     {
@@ -18,7 +18,7 @@ bool existe(std::vector<int> fila, int x)
 int contar(std::vector<int> fila, int x)
 {
   int cont = 0;
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] == x)
     {
@@ -30,7 +30,7 @@ int contar(std::vector<int> fila, int x)
 
 int procurar_valor(std::vector<int> fila, int x)
 {
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] == x)
     {
@@ -42,7 +42,7 @@ int procurar_valor(std::vector<int> fila, int x)
 
 int procurar_valor_apartir(std::vector<int> fila, int x, int inicio)
 {
-  for (int i = inicio; i < fila.size(); i++)
+  for (int i = inicio; i < (int)fila.size(); i++)
   {
     if (fila[i] == x)
     {
@@ -64,7 +64,7 @@ int procurar_menor_pos(std::vector<int> fila)
   int menor = fila[0];
   int indice = 0;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] < menor)
     {
@@ -80,7 +80,7 @@ int procurar_menor_pos_apartir(std::vector<int> fila, int inicio)
   int menor = fila[inicio];
   int indice = inicio;
 
-  for (int i = inicio; i < fila.size(); i++)
+  for (int i = inicio; i < (int)fila.size(); i++)
   {
     if (fila[i] < menor)
     {
@@ -96,7 +96,7 @@ int procurar_melhor_pos_se(std::vector<int> fila)
   int menor = 100;
   int indice = -1;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if ((fila[i] > 0) && (fila[i] < menor))
     {
@@ -114,7 +114,7 @@ float calcular_stress_medio(std::vector<int> fila)
   float soma = 0;
   float media = 0;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     soma += abs(fila[i]);
   }
@@ -127,7 +127,7 @@ std::string mais_homens_ou_mulheres(std::vector<int> fila)
 {
   int compare = 0;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] > 0)
     {
@@ -160,7 +160,7 @@ std::string qual_metade_eh_mais_estressada(std::vector<int> fila)
   int primeira = 0;
   int segunda = 0;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (i < tamanho_fila)
     {
@@ -194,7 +194,7 @@ std::string homens_sao_mais_estressados_que_mulheres(std::vector<int> fila)
   int size_mulheres = 0;
   float media_mulheres;
 
-  for (int i = 0; i < fila.size(); i++)
+  for (int i = 0; i < (int)fila.size(); i++)
   {
     if (fila[i] > 0)
     {
@@ -284,7 +284,7 @@ int main()
   std::cout << "Testes - funcao homens_sao_mais_estressados_que_mulheres:\n";
   std::cout << homens_sao_mais_estressados_que_mulheres({50, 98, 2, -50, -1, -99}) << '\n';
   std::cout << homens_sao_mais_estressados_que_mulheres({52, 98, 2, -50, -1, -99}) << '\n';
-  std::cout << homens_sao_mais_estressados_que_mulheres({50, 98, 2, -79, -1, -99}) << "\n\n";
+  std::cout << homens_sao_mais_estressados_que_mulheres({50, 98, 2, -79, -1, -99}) << '\n';
 
   return 0;
 }
