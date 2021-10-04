@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 //Busca:
 bool existe(std::vector<int> fila, int x)
