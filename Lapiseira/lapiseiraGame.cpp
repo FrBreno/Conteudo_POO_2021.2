@@ -1,10 +1,12 @@
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 struct GRAFITE
 {
-  float calibre{0.0f}; // Em mm
-  int tamanho{0};      // Em mm
-  std::string dureza{"NULL"};
+  float calibre; // Em mm
+  int tamanho;   // Em mm
+  std::string dureza;
 
   GRAFITE(float calibre = 0.0f, int tamanho = 0, std::string dureza = "NULL") : calibre{calibre}, tamanho{tamanho}, dureza{dureza}
   {
@@ -41,49 +43,42 @@ struct GRAFITE
 
 struct LAPISEIRA
 {
-  float calibre{0.3f}; // Em mm.
-  GRAFITE grafite;
+  float calibre; // Em mm.
+  GRAFITE *grafite = nullptr;
 
   LAPISEIRA(float calibre = 0.3f) : calibre{calibre}
   {
   }
 
-  bool inserir(GRAFITE grafite)
+  bool inserir(GRAFITE *grafite)
   {
-    float calibre_grafite;
-    int tamanho_grafite;
-    std::string dureza_grafite;
-
-    std::cin >> calibre_grafite >> dureza_grafite >> tamanho_grafite;
-
-    if (calibre_grafite != this->calibre)
+    if (grafite->calibre != this->calibre)
     {
       std::cout << "ERROR! Calibre incompativel\n";
+      this->grafite = nullptr;
       return false;
     }
-
-    grafite.calibre = calibre_grafite;
-    grafite.dureza = dureza_grafite;
-    grafite.tamanho = tamanho_grafite;
+    if (this->grafite != nullptr)
+    {
+      std::cout << "ERROR! Ja existe grafite\n";
+      return false;
+    }
     this->grafite = grafite;
-
     return true;
   }
 
-  GRAFITE remover()
+  GRAFITE *remover()
   {
-    this->grafite.calibre = 0.0f;
-    this->grafite.tamanho = 0;
-    this->grafite.dureza = "NULL";
-
-    return grafite;
+    GRAFITE *cis = this->grafite;
+    this->grafite = nullptr;
+    return cis;
   }
 
   bool write(int folhas)
   {
     int follhasEscritas{0};
 
-    if (this->grafite.dureza == "NULL")
+    if (this->grafite == nullptr)
     {
       std::cout << "ERROR! Sem grafite na lapiseira\n";
       return false;
@@ -91,25 +86,24 @@ struct LAPISEIRA
 
     while (folhas > 0)
     {
-      int desgaste = grafite.desgastePorFolha();
+      int desgaste = grafite->desgastePorFolha();
 
-      if (this->grafite.tamanho == 0 || desgaste > this->grafite.tamanho)
+      if (this->grafite->tamanho == 0 || desgaste > this->grafite->tamanho)
       {
 
-        std::cout << "Texto incompleto!\n";
+        std::cout << "\nTexto incompleto!\n";
         std::cout << follhasEscritas << " folhas foram escritas\n";
 
         std::cout << "\nCabou o grafite :/\n";
         remover();
         return false;
       }
-      grafite.tamanho -= desgaste;
-
+      grafite->tamanho -= desgaste;
       follhasEscritas++;
       folhas--;
     }
 
-    if (folhas == 0 && this->grafite.tamanho == 0)
+    if (folhas == 0 && this->grafite->tamanho == 0)
     {
       std::cout << "\nCabou o grafite :/\n";
       remover();
@@ -128,45 +122,75 @@ struct LAPISEIRA
 
 int main()
 {
-  int x{0};
-  bool existe_grafite{false};
-  int folhas{0};
-  float calibre_lapiseira;
+  LAPISEIRA bic;
 
-  std::cout << "Digite o calibre de sua lapiseira: ";
-  std::cin >> calibre_lapiseira;
-
-  LAPISEIRA lapiseira{calibre_lapiseira};
-
-  while (x != 1)
+  while (true)
   {
-    if (existe_grafite)
-    {
-      std::string sn;
-      std::cout << "Existe um grafite na lapiseira. Deseja remove-lo? [s/n]\n";
-      std::cin >> sn;
+    std::cout << "$ ";
 
-      if (sn == "s")
+    std::string line;
+    std::getline(std::cin, line);
+    std::stringstream ss(line);
+
+    std::string comando;
+    ss >> comando;
+
+    if (comando == "end")
+    {
+      break;
+    }
+    else if (comando == "init")
+    {
+      float calibre{0};
+      ss >> calibre;
+      bic.calibre = calibre;
+    }
+    else if (comando == "show")
+    {
+      std::cout << bic.toString();
+      if (bic.grafite == nullptr)
       {
-        lapiseira.remover();
-        existe_grafite = false;
+        std::cout << "Grafite: null\n";
+      }
+      else
+      {
+        std::cout << bic.grafite->toString() << std::endl;
       }
     }
-    if (!existe_grafite)
+    else if (comando == "inserir")
     {
-      std::cout << "\nDigite o calibre, a dureza e o tamanho do grafite em mm (respectivamente): ";
+      float calibre{0};
+      std::string dureza;
+      int tamanho;
 
-      existe_grafite = lapiseira.inserir(lapiseira.grafite);
+      ss >> calibre >> dureza >> tamanho;
+      GRAFITE *grafite = new GRAFITE(calibre, tamanho, dureza);
+
+      if (!bic.inserir(grafite))
+      {
+        delete grafite;
+      }
     }
+    else if (comando == "remover")
+    {
+      GRAFITE *grafite = bic.remover();
+      if (grafite != nullptr)
+      {
+        delete grafite;
+      }
+      else
+      {
+        std::cout << "Tem grafite na lapiseira nao man!\n";
+      }
+    }
+    else if (comando == "write")
+    {
+      int folhas{0};
 
-    std::cout << "\nDigite a quantidade de folhas a serem escritas: ";
-    std::cin >> folhas;
-    existe_grafite = lapiseira.write(folhas);
-
-    std::cout << "Tecle 1 para encerrar o programa ou 2 para continuar: ";
-    std::cin >> x;
+      ss >> folhas;
+      bic.write(folhas);
+    }
   }
 
-  std::cout << lapiseira.toString() << lapiseira.grafite.toString() << '\n';
   return 0;
 }
