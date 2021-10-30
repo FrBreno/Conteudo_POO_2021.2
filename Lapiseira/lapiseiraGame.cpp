@@ -44,10 +44,9 @@ struct GRAFITE
 struct LAPISEIRA
 {
   float calibre; // Em mm.
-  // GRAFITE *grafite = nullptr;
   std::vector<GRAFITE> grafites;
 
-  LAPISEIRA(float calibre = 0.3f) : calibre{calibre}
+  LAPISEIRA(float calibre = 0.0f) : calibre{calibre}
   {
   }
 
@@ -81,6 +80,15 @@ struct LAPISEIRA
     return cis;
   }
 
+  bool grafiteInutil(int tamanho)
+  {
+    if (tamanho <= 6)
+    {
+      return true;
+    }
+    return false;
+  }
+
   bool write(int folhas)
   {
     int follhasEscritas{0};
@@ -93,31 +101,8 @@ struct LAPISEIRA
 
     while (folhas > 0)
     {
-      int desgaste = this->grafites[0].desgastePorFolha();
-      bool trocaGrafite{false};
-
-      if (this->grafites[0].tamanho == 0 || desgaste > this->grafites[0].tamanho)
+      if (this->grafites[0].tamanho == 0 || grafiteInutil(this->grafites[0].tamanho))
       {
-        if (desgaste > this->grafites[0].tamanho && (int)this->grafites.size() > 1)
-        {
-          trocaGrafite = true;
-          int diferenca = desgaste - this->grafites[0].tamanho;
-          this->grafites[0].tamanho = 0;
-          for (int i{1}; i < (int)this->grafites.size(); i++)
-          {
-            int aux = diferenca;
-            diferenca -= this->grafites[i].tamanho;
-            this->grafites[i].tamanho -= aux;
-            if (this->grafites[i].tamanho > 0)
-            {
-              break;
-            }
-            else
-            {
-              this->grafites.erase(this->grafites.begin() + i);
-            }
-          }
-        }
         if ((int)this->grafites.size() == 1)
         {
           std::cout << "\nTexto incompleto!\n";
@@ -125,18 +110,20 @@ struct LAPISEIRA
 
           std::cout << "\nCabou o grafite :/\n";
         }
+
         this->grafites.erase(this->grafites.begin());
         if ((int)this->grafites.size() == 0)
         {
           return false;
         }
       }
-      if (!trocaGrafite)
+      if (!grafiteInutil(this->grafites[0].tamanho))
       {
+        int desgaste = this->grafites[0].desgastePorFolha();
         this->grafites[0].tamanho -= desgaste;
+        follhasEscritas++;
+        folhas--;
       }
-      follhasEscritas++;
-      folhas--;
     }
 
     if (folhas == 0 && this->grafites[0].tamanho == 0)
@@ -150,6 +137,46 @@ struct LAPISEIRA
     }
 
     return true;
+  }
+
+  void caiu()
+  {
+    if ((int)this->grafites.size() == 0)
+    {
+      std::cout << "Man, tua lapiseira caiu mas ainda bem que nao tinha grafite\n";
+      return;
+    }
+
+    std::vector<GRAFITE> aux;
+    for (int i{0}; i < (int)this->grafites.size(); i++)
+    {
+      if (this->grafites[i].tamanho > 1)
+      {
+        int tamanho = this->grafites[i].tamanho;
+        int div{2};
+        while (true)
+        {
+          if (tamanho % div == 0)
+          {
+            break;
+          }
+          div++;
+        }
+
+        this->grafites[i].tamanho = tamanho / div;
+        for (int j{0}; j < div; j++)
+        {
+          aux.push_back(this->grafites[i]);
+        }
+      }
+      else if (this->grafites[i].tamanho == 1)
+      {
+        aux.push_back(this->grafites[i]);
+      }
+    }
+    this->grafites.clear();
+    this->grafites = aux;
+    return;
   }
 
   std::string toString()
@@ -231,6 +258,14 @@ int main()
 
       ss >> folhas;
       bic.write(folhas);
+    }
+    else if (comando == "caiu")
+    {
+      bic.caiu();
+    }
+    else
+    {
+      std::cout << "Ei po, tu nao digitou o comando da forma certa.\n";
     }
   }
 
