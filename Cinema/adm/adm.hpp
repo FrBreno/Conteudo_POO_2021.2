@@ -3,7 +3,7 @@
 class Adm
 {
   Sala sala{0};
-  list<shared_ptr<Cliente>> cadeirasAdm;
+  vector<shared_ptr<Cliente>> cadeirasAdm;
 
 public:
   void criarSala(int capacidade);

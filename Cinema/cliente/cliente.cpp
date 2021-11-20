@@ -4,10 +4,6 @@ Cliente::Cliente(string fone = "0000", string id = "-") : fone{fone}, id{id} {}
 
 string Cliente::toString()
 {
-  if (this->id == "-")
-  {
-    return this->id;
-  }
   return this->id + ":" + this->fone;
 }
 

@@ -1,5 +1,4 @@
 #include "adm.hpp"
-#include <iterator>
 
 void Adm::criarSala(int capacidade)
 {
@@ -13,52 +12,45 @@ void Adm::criarSala(int capacidade)
 
 bool Adm::reservar(string id, string fone, int ind)
 {
-  int cont{0};
   if (ind >= sala.getCapacidade())
   {
+    if (this->sala.getCapacidade() == 0)
+    {
+      cout << "Tu tem que inicializar a sala primeiro Adm!\n";
+      return false;
+    }
     cout << "Digite apenas cadeiras do numero 0 ao " << sala.getCapacidade() - 1 << endl;
     return false;
   }
-  for (shared_ptr<Cliente> i : this->cadeirasAdm)
+  else if (cadeirasAdm[ind] != nullptr)
   {
-    if (cont == ind && i->getId() != "-")
-    {
-      cout << "Ja tem gente sentada ai ja man.\n";
-      return false;
-    }
-    if (i->getId() == id)
-    {
-      cout << "ERROR! Ja tem gente com esse ID na sala.\n";
-      return false;
-    }
-    cont++;
+    cout << "Ja tem gente sentada ai ja man.\n";
+    return false;
   }
-
-  list<shared_ptr<Cliente>>::iterator it;
-  it = this->cadeirasAdm.begin();
-  advance(it, ind);
-  this->cadeirasAdm.insert(it, make_shared<Cliente>(fone, id));
-  this->cadeirasAdm.erase(it);
-
+  else
+  {
+    for (int i{0}; i < sala.getCapacidade(); i++)
+    {
+      if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
+      {
+        cout << "ERROR! Ja tem gente com esse ID na sala.\n";
+        return false;
+      }
+    }
+    this->cadeirasAdm[ind] = make_shared<Cliente>(fone, id);
+  }
   return true;
 }
 
 void Adm::cancelar(string id)
 {
-  int cont{0};
-  list<shared_ptr<Cliente>>::iterator it;
-  it = this->cadeirasAdm.begin();
-
-  for (shared_ptr<Cliente> i : this->cadeirasAdm)
+  for (int i{0}; i < sala.getCapacidade(); i++)
   {
-    if (i->getId() == id)
+    if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
     {
-      advance(it, cont);
-      this->cadeirasAdm.insert(it, make_shared<Cliente>("0", "-"));
-      this->cadeirasAdm.erase(it);
+      cadeirasAdm[i] = nullptr;
       return;
     }
-    cont++;
   }
   cout << "Id nao encontrado (cliente nao esta no cinema)\n";
   return;
@@ -75,9 +67,16 @@ string Adm::toString()
   else
   {
     line = "[ ";
-    for (shared_ptr<Cliente> i : this->cadeirasAdm)
+    for (int i{0}; i < sala.getCapacidade(); i++)
     {
-      line += i->toString() + " ";
+      if (cadeirasAdm[i] != nullptr)
+      {
+        line += cadeirasAdm[i]->toString() + " ";
+      }
+      else
+      {
+        line += "- ";
+      }
     }
     line += "]";
   }

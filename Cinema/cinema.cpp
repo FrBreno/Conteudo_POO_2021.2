@@ -16,7 +16,7 @@ int main()
     string cmd;
     ss >> cmd;
 
-    if (cmd == "exit")
+    if (cmd == "end")
     {
       adm.exitAdm();
       break;
