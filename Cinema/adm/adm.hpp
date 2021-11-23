@@ -7,8 +7,9 @@ class Adm
 
 public:
   void criarSala(int capacidade);
+  int buscaCadeira(string id);
   bool reservar(string id, string fone, int ind);
-  void cancelar(string id);
+  shared_ptr<Cliente> cancelar(string id);
   string toString();
   void exitAdm();
 };

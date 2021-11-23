@@ -1,9 +1,20 @@
 #include "adm/adm.hpp"
 #include <sstream>
 
+void show_help()
+{
+  cout << "\ninit <int>\n";
+  cout << "show\n";
+  cout << "reservar <string> <string> <int>\n";
+  cout << "cancelar <string>\n";
+  cout << "end\n\n";
+  return;
+}
+
 int main()
 {
   Adm adm;
+  cout << "\nDigite: 'help' para ver os comandos disponiveis\n\n";
 
   while (true)
   {
@@ -46,6 +57,10 @@ int main()
 
       ss >> id;
       adm.cancelar(id);
+    }
+    else if (cmd == "help")
+    {
+      show_help();
     }
     else
     {

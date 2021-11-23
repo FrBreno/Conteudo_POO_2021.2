@@ -10,50 +10,57 @@ void Adm::criarSala(int capacidade)
   this->cadeirasAdm = sala.getCadeiras();
 }
 
+int Adm::buscaCadeira(string id)
+{
+  for (int i{0}; i < this->sala.getCapacidade(); i++)
+  {
+    if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
+    {
+      //Tem gente!
+      return i;
+    }
+  }
+  //Cadeira livre:
+  return -1;
+}
+
 bool Adm::reservar(string id, string fone, int ind)
 {
-  if (ind >= sala.getCapacidade())
+  if (ind >= this->sala.getCapacidade())
   {
     if (this->sala.getCapacidade() == 0)
     {
       cout << "Tu tem que inicializar a sala primeiro Adm!\n";
       return false;
     }
-    cout << "Digite apenas cadeiras do numero 0 ao " << sala.getCapacidade() - 1 << endl;
+    cout << "Digite apenas cadeiras do numero 0 ao " << this->sala.getCapacidade() - 1 << endl;
     return false;
   }
-  else if (cadeirasAdm[ind] != nullptr)
+  if (this->cadeirasAdm[ind] != nullptr)
   {
     cout << "Ja tem gente sentada ai ja man.\n";
     return false;
   }
-  else
+
+  if (this->buscaCadeira(id) != -1)
   {
-    for (int i{0}; i < sala.getCapacidade(); i++)
-    {
-      if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
-      {
-        cout << "ERROR! Ja tem gente com esse ID na sala.\n";
-        return false;
-      }
-    }
-    this->cadeirasAdm[ind] = make_shared<Cliente>(fone, id);
+    cout << "ERROR! Ja tem gente com esse ID na sala.\n";
+    return false;
   }
+
+  this->cadeirasAdm[ind] = make_shared<Cliente>(fone, id);
   return true;
 }
 
-void Adm::cancelar(string id)
+shared_ptr<Cliente> Adm::cancelar(string id)
 {
-  for (int i{0}; i < sala.getCapacidade(); i++)
+  int i = this->buscaCadeira(id);
+  if (i != -1)
   {
-    if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
-    {
-      cadeirasAdm[i] = nullptr;
-      return;
-    }
+    return exchange(this->cadeirasAdm[i], nullptr);
   }
   cout << "Id nao encontrado (cliente nao esta no cinema)\n";
-  return;
+  return nullptr;
 }
 
 string Adm::toString()
@@ -67,11 +74,11 @@ string Adm::toString()
   else
   {
     line = "[ ";
-    for (int i{0}; i < sala.getCapacidade(); i++)
+    for (int i{0}; i < this->sala.getCapacidade(); i++)
     {
-      if (cadeirasAdm[i] != nullptr)
+      if (this->cadeirasAdm[i] != nullptr)
       {
-        line += cadeirasAdm[i]->toString() + " ";
+        line += this->cadeirasAdm[i]->toString() + " ";
       }
       else
       {
@@ -86,7 +93,7 @@ string Adm::toString()
 
 void Adm::exitAdm()
 {
-  sala.exit();
+  this->sala.exit();
   this->cadeirasAdm.clear();
   return;
 }
