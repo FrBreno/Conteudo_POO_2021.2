@@ -12,7 +12,7 @@ void Contact::addFone(Fone fone)
 
 void Contact::rmFone(int index)
 {
-  if (index >= (int)this->fones.size())
+  if (index >= (int)this->fones.size() || index < 0)
   {
     cout << "[ERROR!] Indice nao encontrado!\n";
     return;
@@ -33,7 +33,7 @@ string Contact::toString()
   return flow;
 }
 
-void Contact::setName(string name)
+void Contact::setName(string name = "")
 {
   if ((int)this->fones.size() > 0)
   {
@@ -41,4 +41,14 @@ void Contact::setName(string name)
   }
   this->name = name;
   return;
+}
+
+string Contact::getName()
+{
+  return this->name;
+}
+
+vector<Fone> Contact::getFones()
+{
+  return this->fones;
 }

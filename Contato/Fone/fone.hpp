@@ -13,4 +13,7 @@ public:
   string toString();
 
   string getNumber();
+  string getId();
+  void setId(string id);
+  void setNumber(string number);
 };

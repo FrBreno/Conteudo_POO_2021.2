@@ -13,4 +13,6 @@ public:
   string toString();
 
   void setName(string name);
+  string getName();
+  vector<Fone> getFones();
 };

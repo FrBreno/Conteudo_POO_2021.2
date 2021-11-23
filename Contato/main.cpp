@@ -32,8 +32,7 @@ int main()
       string number{};
       ss >> id >> number;
 
-      Fone fone(id, number);
-      contact.addFone(fone);
+      contact.addFone(Fone(id, number));
     }
     else if (cmd == "rm")
     {

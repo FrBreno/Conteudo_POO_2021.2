@@ -24,3 +24,20 @@ string Fone::getNumber()
 {
   return this->number;
 }
+
+string Fone::getId()
+{
+  return this->id;
+}
+
+void Fone::setId(string id)
+{
+  this->id = id;
+  return;
+}
+
+void Fone::setNumber(string number)
+{
+  this->number = number;
+  return;
+}
