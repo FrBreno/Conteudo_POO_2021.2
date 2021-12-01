@@ -96,6 +96,6 @@ string Adm::toString()
 void Adm::exitAdm()
 {
   this->sala.exit();
-  this->cadeirasAdm->clear();
+  delete this->cadeirasAdm;
   return;
 }
