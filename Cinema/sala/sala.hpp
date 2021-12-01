@@ -11,6 +11,6 @@ public:
   Sala(int capacidade);
   void setCapacidade(int capacidade);
   int getCapacidade();
-  vector<shared_ptr<Cliente>> getCadeiras();
+  vector<shared_ptr<Cliente>> *getCadeiras();
   void exit();
 };

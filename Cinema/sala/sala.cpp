@@ -17,9 +17,9 @@ int Sala::getCapacidade()
   return this->capacidade;
 }
 
-vector<shared_ptr<Cliente>> Sala::getCadeiras()
+vector<shared_ptr<Cliente>> *Sala::getCadeiras()
 {
-  return this->cadeiras;
+  return &cadeiras;
 }
 
 void Sala::exit()

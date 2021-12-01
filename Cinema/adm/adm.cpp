@@ -2,7 +2,7 @@
 
 void Adm::criarSala(int capacidade)
 {
-  if ((int)this->cadeirasAdm.size() != 0)
+  if (this->sala.getCapacidade() != 0)
   {
     sala.exit();
   }
@@ -12,15 +12,15 @@ void Adm::criarSala(int capacidade)
 
 int Adm::buscaCadeira(string id)
 {
-  for (int i{0}; i < this->sala.getCapacidade(); i++)
+  int i{0};
+  for (shared_ptr<Cliente> it : *cadeirasAdm)
   {
-    if (this->cadeirasAdm[i] != nullptr && this->cadeirasAdm[i]->getId() == id)
+    if (it != nullptr && it->getId() == id)
     {
-      //Tem gente!
       return i;
     }
+    i++;
   }
-  //Cadeira livre:
   return -1;
 }
 
@@ -36,11 +36,6 @@ bool Adm::reservar(string id, string fone, int ind)
     cout << "Digite apenas cadeiras do numero 0 ao " << this->sala.getCapacidade() - 1 << endl;
     return false;
   }
-  if (this->cadeirasAdm[ind] != nullptr)
-  {
-    cout << "Ja tem gente sentada ai ja man.\n";
-    return false;
-  }
 
   if (this->buscaCadeira(id) != -1)
   {
@@ -48,7 +43,13 @@ bool Adm::reservar(string id, string fone, int ind)
     return false;
   }
 
-  this->cadeirasAdm[ind] = make_shared<Cliente>(fone, id);
+  vector<shared_ptr<Cliente>>::iterator pos_cadeira = this->cadeirasAdm->begin() + ind;
+  if (*pos_cadeira != nullptr)
+  {
+    cout << "Ja tem gente sentada ai ja man.\n";
+    return false;
+  }
+  *pos_cadeira = make_shared<Cliente>(fone, id);
   return true;
 }
 
@@ -57,7 +58,8 @@ shared_ptr<Cliente> Adm::cancelar(string id)
   int i = this->buscaCadeira(id);
   if (i != -1)
   {
-    return exchange(this->cadeirasAdm[i], nullptr);
+    vector<shared_ptr<Cliente>>::iterator it = this->cadeirasAdm->begin() + i;
+    return exchange(*it, nullptr);
   }
   cout << "Id nao encontrado (cliente nao esta no cinema)\n";
   return nullptr;
@@ -74,11 +76,11 @@ string Adm::toString()
   else
   {
     line = "[ ";
-    for (int i{0}; i < this->sala.getCapacidade(); i++)
+    for (auto &cadeira : *cadeirasAdm)
     {
-      if (this->cadeirasAdm[i] != nullptr)
+      if (cadeira != nullptr)
       {
-        line += this->cadeirasAdm[i]->toString() + " ";
+        line += cadeira->toString() + " ";
       }
       else
       {
@@ -94,6 +96,6 @@ string Adm::toString()
 void Adm::exitAdm()
 {
   this->sala.exit();
-  this->cadeirasAdm.clear();
+  this->cadeirasAdm->clear();
   return;
 }
