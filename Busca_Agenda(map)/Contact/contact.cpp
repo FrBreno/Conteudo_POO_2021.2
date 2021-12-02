@@ -23,10 +23,6 @@ void Contact::rmFone(int index)
 
 void Contact::setName(string name = "")
 {
-  if ((int)this->fones.size() > 0)
-  {
-    this->fones.clear();
-  }
   this->name = name;
   return;
 }

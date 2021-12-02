@@ -4,8 +4,8 @@ Agenda::Agenda() {}
 
 void Agenda::addContact(Contact contact)
 {
-  map<string, Contact>::iterator it = this->contacts.find(contact.getName());
-  if (it != this->contacts.end())
+  auto [it, res] = this->contacts.insert(make_pair(contact.getName(), contact));
+  if (res == false)
   {
     for (Fone fone : contact.getFones())
     {
@@ -14,7 +14,6 @@ void Agenda::addContact(Contact contact)
     cout << "O contato " << contact.getName() << " foi atualizado!\n";
     return;
   }
-  this->contacts[contact.getName()] = contact;
   return;
 }
 
