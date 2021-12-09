@@ -13,7 +13,7 @@ public:
   void setColor(string color);
   string getColor() const;
 
-  virtual bool it_is_a_car();
+  virtual bool verification(); // it is a car?
   virtual void toDrive();
 
   friend ostream &operator<<(ostream &os, Car &c)

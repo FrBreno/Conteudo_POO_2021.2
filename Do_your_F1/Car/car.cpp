@@ -23,7 +23,7 @@ string Car::getColor() const
   return this->color;
 }
 
-bool Car::it_is_a_car()
+bool Car::verification() // Isso é um carro?
 {
   if (this->isEngine() && this->getWheels() == 4)
   {
@@ -34,7 +34,7 @@ bool Car::it_is_a_car()
 
 void Car::toDrive()
 {
-  if (this->it_is_a_car())
+  if (this->verification())
   {
     cout << "Are you driving! (Voce esta dirigindo!)\n";
     return;

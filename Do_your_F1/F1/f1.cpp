@@ -41,9 +41,9 @@ string F1::getNumber() const
   return this->carNumber;
 }
 
-bool F1::it_is_a_car() // Isso é um carro de F1?
+bool F1::verification() // Isso é um carro de F1?
 {
-  if (Car::it_is_a_car() && this->halo)
+  if (Car::verification() && this->halo)
   {
     return true;
   }
@@ -61,7 +61,7 @@ bool F1::competitive()
 
 void F1::toDrive()
 {
-  if (this->it_is_a_car())
+  if (this->verification())
   {
     if (this->competitive())
     {

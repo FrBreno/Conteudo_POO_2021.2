@@ -8,7 +8,7 @@ void vehicle(Vehicle &v)
 
 void car(Car &c)
 {
-  cout << "It is a car? R->" << (c.it_is_a_car() ? "yes" : "no") << endl;
+  cout << "It is a car? R->" << (c.verification() ? "yes" : "no") << endl;
   c.toDrive();
   cout << c << endl;
   return;
@@ -16,7 +16,7 @@ void car(Car &c)
 
 void f1(F1 &fOne)
 {
-  cout << "It is a F1? R->" << (fOne.it_is_a_car() ? "yes" : "no") << endl;
+  cout << "It is a F1? R->" << (fOne.verification() ? "yes" : "no") << endl;
   cout << "This F1 is competitive? R->" << (fOne.competitive() ? "yes" : "no") << endl;
   fOne.toDrive();
   cout << fOne << endl;

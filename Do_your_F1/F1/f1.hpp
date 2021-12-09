@@ -22,7 +22,7 @@ public:
   void setNumber(string number);
   string getNumber() const;
 
-  bool it_is_a_car();
+  bool verification();
   bool competitive();
   void toDrive();
 
