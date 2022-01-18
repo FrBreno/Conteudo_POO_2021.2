@@ -1,12 +1,10 @@
 #include "message.hpp"
 
-Message::Message() {}
+Message::Message(int id, const std::string &userName, const std::string &msg) : id{id}, userName{userName}, msg{msg} {}
 
-Message::Message(int id, std::string userName, std::string msg) : id{id}, userName{userName}, msg{msg} {}
-
-void Message::like(std::string userName)
+void Message::like(const std::string &username)
 {
-  this->likes.insert(userName);
+  this->likes.insert(username);
 }
 
 int Message::getId() const

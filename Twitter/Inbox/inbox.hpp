@@ -6,16 +6,17 @@
 class Inbox
 {
 private:
-  std::map<int, Message> allMsgs;
-  std::map<int, Message> unread;
+  std::map<int, Message *> allMsgs;
+  std::map<int, Message *> unread;
 
 public:
   Inbox();
-  void receiveNew(Message tweet);
-  void store(Message tweet);
-
-  std::vector<Message> getAll();
+  std::vector<Message *> getUnread();
+  std::vector<Message *> getAll() const;
   Message *getTweet(int id);
-  std::vector<Message> getUnread();
-  friend std::ostream &operator<<(std::ostream &os, const Inbox &in);
+
+  void receiveNew(Message *tweet);
+  void store(Message *tweet);
+
+  friend std::ostream &operator<<(std::ostream &os, Inbox &in);
 };

@@ -1,18 +1,16 @@
 #include "user.hpp"
 
-User::User() {}
-
-User::User(std::string id) : userName{id} {}
+User::User(const std::string &userName) : userName{userName} {}
 
 void User::follow(User *other)
 {
-  auto key = other->getUsername();
+  auto key = other->userName;
   if (this->following.find(key) != this->following.end())
   {
     throw std::runtime_error("Voce ja segue esse usuario.");
   }
   this->following[key] = other;
-  other->addFollower(this);
+  other->followers[this->userName] = this;
 }
 
 void User::unfollow(std::string userName)
@@ -24,7 +22,9 @@ void User::unfollow(std::string userName)
   }
   User *other = it->second;
   this->following.erase(it);
-  other->rmFollower(this->userName);
+
+  auto it_other = other->followers.find(this->userName);
+  other->followers.erase(it_other);
 }
 
 void User::like(int twid)
@@ -32,37 +32,16 @@ void User::like(int twid)
   this->inbox.getTweet(twid)->like(this->userName);
 }
 
-void User::sendTweet(Message tw)
+void User::sendTweet(Message *tw)
 {
   this->inbox.store(tw);
   for (auto &seguidores : this->followers)
   {
-    seguidores.second->addInbox(tw);
+    seguidores.second->inbox.receiveNew(tw);
   }
 }
 
-void User::addFollower(User *other)
-{
-  this->followers[other->getUsername()] = other;
-}
-
-void User::rmFollower(std::string userName)
-{
-  auto it = this->followers.find(userName);
-  this->followers.erase(it);
-}
-
-void User::addInbox(Message tw)
-{
-  this->inbox.receiveNew(tw);
-}
-
-std::string User::getUsername()
-{
-  return this->userName;
-}
-
-Inbox User::getInbox()
+Inbox &User::getInbox()
 {
   return this->inbox;
 }

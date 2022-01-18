@@ -2,20 +2,21 @@
 
 Inbox::Inbox() {}
 
-void Inbox::receiveNew(Message tweet)
+std::vector<Message *> Inbox::getUnread()
 {
-  this->unread[tweet.getId()] = tweet;
-  this->store(tweet);
+  std::vector<Message *> result;
+
+  for (auto &msg : this->unread)
+  {
+    result.push_back(msg.second);
+  }
+  this->unread.clear();
+  return result;
 }
 
-void Inbox::store(Message tweet)
+std::vector<Message *> Inbox::getAll() const
 {
-  this->allMsgs[tweet.getId()] = tweet;
-}
-
-std::vector<Message> Inbox::getAll()
-{
-  std::vector<Message> result;
+  std::vector<Message *> result;
   for (auto &msg : this->allMsgs)
   {
     result.push_back(msg.second);
@@ -30,26 +31,26 @@ Message *Inbox::getTweet(int id)
   {
     throw std::runtime_error("Tweet nao encontrado!");
   }
-  return &it->second;
+  return it->second;
 }
 
-std::vector<Message> Inbox::getUnread()
+void Inbox::receiveNew(Message *tweet)
 {
-  std::vector<Message> result;
-
-  for (auto &msg : this->unread)
-  {
-    result.push_back(msg.second);
-  }
-  this->unread.clear();
-  return result;
+  this->unread[tweet->getId()] = tweet;
+  this->store(tweet);
 }
 
-std::ostream &operator<<(std::ostream &os, const Inbox &in)
+void Inbox::store(Message *tweet)
+{
+  this->allMsgs[tweet->getId()] = tweet;
+}
+
+std::ostream &operator<<(std::ostream &os, Inbox &in)
 {
   for (auto msg : in.allMsgs)
   {
-    os << msg.second << "\n";
+    os << *msg.second << "\n";
   }
+  in.unread.clear();
   return os;
 }

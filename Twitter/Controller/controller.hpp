@@ -1,11 +1,14 @@
 #include "../User/user.hpp"
+#include <memory>
 
 class Controller
 {
 private:
   int nextTwid{0};
-  std::map<int, Message> tweets;
-  std::map<std::string, User> users;
+  std::map<int, std::shared_ptr<Message>> tweets;
+  std::map<std::string, std::shared_ptr<User>> users;
+
+  Message *createMsg(std::string username, std::string msg);
 
 public:
   Controller();

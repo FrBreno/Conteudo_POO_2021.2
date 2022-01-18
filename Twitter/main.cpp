@@ -11,7 +11,7 @@ void helpCommands()
   std::cout << "$ twittar <string> <string>\n";
   std::cout << "$ timeline <string>\n";
   std::cout << "$ like <string> <int>\n";
-  std::cout << "$ unread\n";
+  std::cout << "$ unread <string>\n";
   std::cout << "$ show\n";
   std::cout << "$ end\n\n";
   return;
@@ -45,10 +45,7 @@ int main()
       }
       else if (cmd == "follow")
       {
-        User *user1 = controller.getUser(read<std::string>(ss));
-        User *user2 = controller.getUser(read<std::string>(ss));
-
-        user1->follow(user2);
+        controller.getUser(read<std::string>(ss))->follow(controller.getUser(read<std::string>(ss)));
       }
       else if (cmd == "twittar")
       {
@@ -58,6 +55,9 @@ int main()
       }
       else if (cmd == "unread")
       {
+        auto msgs = controller.getUser(read<std::string>(ss))->getInbox().getUnread();
+
+        std::cout << vec_ptr_to_string<Message *>(msgs, '\n') << std::endl;
       }
       else if (cmd == "timeline")
       {
