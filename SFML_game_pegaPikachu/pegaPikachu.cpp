@@ -14,7 +14,7 @@ struct Entity
   //Atributos para o estado atual da entidade:
   int x{0};
   int y{0};
-  int step{0};
+  int step{0}; // "Tamanho do passo" que a entidade dá quando faz um movimento.
   sf::Sprite sprite;
 
   //Construtor:
@@ -31,7 +31,7 @@ struct Entity
   void draw(sf::RenderWindow &window)
   {
     this->sprite.setPosition(x * step, y * step);
-    setSize(this->sprite, step, step);
+    setSize(this->sprite, step, step); //Defini as dimenssões do sprite.
     window.draw(this->sprite);
   }
 };
