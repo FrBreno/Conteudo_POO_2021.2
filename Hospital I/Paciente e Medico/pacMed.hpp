@@ -31,9 +31,9 @@ public:
 class Medico : public IMedico
 {
 private:
+  std::string sender{}; // Id
   std::string classe{};
   std::map<std::string, IPaciente *> pacientes;
-  std::string sender{}; // Id
 
 public:
   Medico(std::string sender, std::string classe);
@@ -42,16 +42,14 @@ public:
   std::string getId() const override;
   std::vector<IPaciente *> getPacientes() const override;
   void removerPaciente(std::string idPaciente) override;
-
-  friend std::ostream &operator<<(std::ostream &os, Medico &m);
 };
 
 class Paciente : public IPaciente
 {
 protected:
-  std::string diagnostico;
+  std::string sender{}; // Id
+  std::string diagnostico{};
   std::map<std::string, IMedico *> medicos;
-  std::string sender; // Id
 
 public:
   Paciente(std::string sender, std::string diagnostico);
@@ -60,6 +58,4 @@ public:
   std::string getId() const override;
   std::vector<IMedico *> getMedicos() const override;
   void removerMedico(std::string idMedico) override;
-
-  friend std::ostream &operator<<(std::ostream &os, Paciente &p);
 };

@@ -1,6 +1,5 @@
 #include <sstream>
 #include "Hospital/hospital.hpp"
-#include "Auxiliar/auxiliar.hpp"
 
 void helpCommands()
 {
@@ -10,6 +9,18 @@ void helpCommands()
   std::cout << "$ tie <string>_med <string>_pac <string>_pac ... <string>_pac\n";
   std::cout << "$ show\n";
   std::cout << "$ end\n\n";
+  return;
+}
+
+void divide_str(std::string &s, char delim)
+{
+  for (int i{0}; i < (int)s.length(); i++)
+  {
+    if (s[i] == delim)
+    {
+      s[i] = ' ';
+    }
+  }
   return;
 }
 
@@ -33,22 +44,26 @@ int main()
       if (cmd == "addPacs")
       {
         std::string line2{};
+        std::string sender, diag;
         while (ss >> line2)
         {
           divide_str(line2, '-');
           std::stringstream s2(line2);
-          Paciente p(read<std::string>(s2), read<std::string>(s2));
+          s2 >> sender >> diag;
+          Paciente p(sender, diag);
           hospital.addPaciente(std::make_shared<Paciente>(p));
         }
       }
       else if (cmd == "addMeds")
       {
         std::string line2{};
+        std::string sender, classe;
         while (ss >> line2)
         {
           divide_str(line2, '-');
           std::stringstream s2(line2);
-          Medico m(read<std::string>(s2), read<std::string>(s2));
+          s2 >> sender >> classe;
+          Medico m(sender, classe);
           hospital.addMedico(std::make_shared<Medico>(m));
         }
       }

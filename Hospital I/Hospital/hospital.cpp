@@ -57,7 +57,7 @@ void Hospital::vincular(std::string nomeMedico, std::string nomePaciente)
 
 std::ostream &operator<<(std::ostream &os, const Hospital &h)
 {
-  for (auto &pac : h.pacientes)
+  for (auto pac : h.pacientes)
   {
     os << *pac.second << "\n";
   }

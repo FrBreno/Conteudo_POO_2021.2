@@ -1,15 +1,16 @@
 #include <iostream>
+#include <memory>
 #include "pacMed.hpp"
 
 // MÉDICO:
-Medico::Medico(std::string sender, std::string classe) : classe{classe}, sender{sender} {}
+Medico::Medico(std::string sender, std::string classe) : sender{sender}, classe{classe} {}
 
 void Medico::addPaciente(IPaciente *paciente)
 {
   auto key = paciente->getId();
   if (this->pacientes.find(key) != this->pacientes.end())
   {
-    throw std::runtime_error("O paciente ja esta cadastrado!");
+    return;
   }
   this->pacientes[key] = paciente;
   paciente->addMedico(this);
@@ -48,33 +49,15 @@ void Medico::removerPaciente(std::string idPaciente)
   paciente->removerMedico(this->sender);
 }
 
-std::ostream &operator<<(std::ostream &os, Medico &m)
-{
-  os << "Med: " << m.sender << ":" << m.classe << "Pacs: [";
-  int cont = (int)m.pacientes.size();
-  for (auto pac : m.pacientes)
-  {
-    cont--;
-    os << pac.second->getId();
-    if (cont != 0)
-    {
-      os << ",";
-    }
-    os << " ";
-  }
-  os << "]";
-  return os;
-}
-
 // // PACIENTE:
-Paciente::Paciente(std::string sender, std::string diagnostico) : diagnostico{diagnostico}, sender{sender} {}
+Paciente::Paciente(std::string sender, std::string diagnostico) : sender{sender}, diagnostico{diagnostico} {}
 
 void Paciente::addMedico(IMedico *medico)
 {
   auto key = medico->getId();
   if (this->medicos.find(key) != this->medicos.end())
   {
-    throw std::runtime_error("O medico ja esta cadastrado!");
+    return;
   }
 
   auto getMed = getMedicos();
@@ -123,19 +106,39 @@ void Paciente::removerMedico(std::string idMedico)
   medico->removerPaciente(this->sender);
 }
 
-std::ostream &operator<<(std::ostream &os, Paciente &p)
+std::ostream &operator<<(std::ostream &os, IPaciente &p)
 {
-  os << "Pac: " << p.sender << ":" << p.diagnostico << "Meds: [";
-  int cont = (int)p.medicos.size();
-  for (auto med : p.medicos)
+  os << "Pac: " << p.getId() << ":" << p.getDiagnotisco() << "\t";
+  os << "Meds: [";
+  auto meds = p.getMedicos();
+  int cont = meds.size();
+  for (auto med : meds)
   {
     cont--;
-    os << med.second->getId();
-    if (cont != 0)
+    os << med->getId();
+    if (cont > 0)
     {
-      os << ",";
+      os << ", ";
     }
-    os << " ";
+  }
+  os << "]";
+  return os;
+}
+
+std::ostream &operator<<(std::ostream &os, IMedico &m)
+{
+  os << "Med: " << m.getId() << ":" << m.getClasse() << "\t";
+  os << "Pacs: [";
+  auto pacs = m.getPacientes();
+  int cont = pacs.size();
+  for (auto pac : pacs)
+  {
+    cont--;
+    os << pac->getId();
+    if (cont > 0)
+    {
+      os << ", ";
+    }
   }
   os << "]";
   return os;
