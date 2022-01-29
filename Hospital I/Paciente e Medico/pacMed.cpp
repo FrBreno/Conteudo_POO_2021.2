@@ -1,5 +1,3 @@
-#include <iostream>
-#include <memory>
 #include "pacMed.hpp"
 
 // MÉDICO:
@@ -49,7 +47,7 @@ void Medico::removerPaciente(std::string idPaciente)
   paciente->removerMedico(this->sender);
 }
 
-// // PACIENTE:
+// PACIENTE:
 Paciente::Paciente(std::string sender, std::string diagnostico) : sender{sender}, diagnostico{diagnostico} {}
 
 void Paciente::addMedico(IMedico *medico)
@@ -106,6 +104,7 @@ void Paciente::removerMedico(std::string idMedico)
   medico->removerPaciente(this->sender);
 }
 
+// to_string:
 std::ostream &operator<<(std::ostream &os, IPaciente &p)
 {
   os << "Pac: " << p.getId() << ":" << p.getDiagnotisco() << "\t";
