@@ -18,7 +18,10 @@ std::vector<Tweet *> Inbox::getTimeline() const
   std::vector<Tweet *> result;
   for (auto &msg : this->timeline)
   {
-    result.push_back(msg.second);
+    if (!msg.second->isDeleted())
+    {
+      result.push_back(msg.second);
+    }
   }
   return result;
 }
@@ -31,7 +34,6 @@ std::vector<Tweet *> Inbox::getMyTweets() const
   {
     result.push_back(msg.second);
   }
-  // this->myTweets.clear();
   return result;
 }
 

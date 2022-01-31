@@ -40,33 +40,25 @@ void Controller::sendTweet(std::string username, std::string msg)
 
 void Controller::sendRt(std::string username, int twId, std::string msg)
 {
-  auto it_user = this->users.find(username);
-  if (it_user == this->users.end())
-  {
-    throw std::runtime_error("Usuario nao encontrado!");
-  }
+  User *user = getUser(username);
 
   sendTweet(username, msg);
-  Tweet *tweetRt = it_user->second->getInbox().getTweet(this->nextTwid - 1);
-  Tweet *tweet = it_user->second->getInbox().getTweet(twId);
+  Tweet *tweetRt = user->getInbox().getTweet(this->nextTwid - 1);
+  Tweet *tweet = user->getInbox().getTweet(twId);
   tweetRt->setRt(tweet);
 }
 
 void Controller::rmUser(std::string username)
 {
-  auto it = this->users.find(username);
-  if (it == this->users.end())
-  {
-    throw std::runtime_error("Usuario nao encontrado.");
-  }
-  it->second->unfollowAll();
-  it->second->rejectAll();
-  auto tweets = it->second->getInbox().getMyTweets();
+  User *user = getUser(username);
+  user->unfollowAll();
+  user->rejectAll();
+  auto tweets = user->getInbox().getMyTweets();
   for (auto tweet : tweets)
   {
     tweet->setDeleted();
   }
-  this->users.erase(it);
+  this->users.erase(users.find(username));
 }
 
 std::ostream &operator<<(std::ostream &os, const Controller &control)

@@ -35,6 +35,9 @@ void Tweet::setRt(Tweet *rt)
 void Tweet::setDeleted()
 {
   this->deleted = true;
+  this->msg = "esse tweet foi deletado";
+  this->userName = "";
+  this->likes.clear();
 }
 
 bool Tweet::isDeleted() const
@@ -46,34 +49,26 @@ std::ostream &operator<<(std::ostream &os, const Tweet &mes)
 {
   int size = (int)mes.likes.size();
 
-  os << mes.id << ":";
-  if (mes.isDeleted())
+  os << mes.id << ":" << mes.userName << " (" << mes.msg << ")";
+  if (size > 0)
   {
-    os << " (esse tweet foi deletado)";
-  }
-  else
-  {
-    os << mes.userName << " (" << mes.msg << ")";
-    if (size > 0)
+    os << " [";
+    for (auto like : mes.likes)
     {
-      os << " [";
-      for (auto like : mes.likes)
+      os << like;
+      if (size > 1)
       {
-        os << like;
-        if (size > 1)
-        {
-          os << ", ";
-        }
-        size--;
+        os << ", ";
       }
-      os << "]";
+      size--;
     }
+    os << "]";
+  }
 
-    if (mes.rt != nullptr)
-    {
-      os << "\n\t";
-      os << *mes.rt;
-    }
+  if (mes.rt != nullptr)
+  {
+    os << "\n\t";
+    os << *mes.rt;
   }
   return os;
 }
