@@ -2,55 +2,77 @@
 
 Inbox::Inbox() {}
 
-std::vector<Message *> Inbox::getUnread()
+void Inbox::storeInTimeline(Tweet *tweet)
 {
-  std::vector<Message *> result;
+  this->timeline[tweet->getId()] = tweet;
+}
 
-  for (auto &msg : this->unread)
+void Inbox::storeInMyTweets(Tweet *tweet)
+{
+  this->myTweets[tweet->getId()] = tweet;
+  this->storeInTimeline(tweet);
+}
+
+std::vector<Tweet *> Inbox::getTimeline() const
+{
+  std::vector<Tweet *> result;
+  for (auto &msg : this->timeline)
   {
     result.push_back(msg.second);
   }
-  this->unread.clear();
   return result;
 }
 
-std::vector<Message *> Inbox::getAll() const
+std::vector<Tweet *> Inbox::getMyTweets() const
 {
-  std::vector<Message *> result;
-  for (auto &msg : this->allMsgs)
+  std::vector<Tweet *> result;
+
+  for (auto &msg : this->myTweets)
   {
     result.push_back(msg.second);
   }
+  // this->myTweets.clear();
   return result;
 }
 
-Message *Inbox::getTweet(int id)
+Tweet *Inbox::getTweet(int id)
 {
-  auto it = this->allMsgs.find(id);
-  if (it == this->allMsgs.end())
+  auto it = this->timeline.find(id);
+  if (it == this->timeline.end())
   {
     throw std::runtime_error("Tweet nao encontrado!");
   }
   return it->second;
 }
 
-void Inbox::receiveNew(Message *tweet)
+void Inbox::rmMsgsFrom(const std::string &username)
 {
-  this->unread[tweet->getId()] = tweet;
-  this->store(tweet);
-}
+  std::vector<int> ids;
+  for (auto &tLine : this->timeline)
+  {
+    std::string name = tLine.second->getSender();
+    if (name == username)
+    {
 
-void Inbox::store(Message *tweet)
-{
-  this->allMsgs[tweet->getId()] = tweet;
+      ids.push_back(tLine.second->getId());
+    }
+  }
+  for (int id : ids)
+  {
+    auto it = this->timeline.find(id);
+    this->timeline.erase(it);
+  }
 }
 
 std::ostream &operator<<(std::ostream &os, Inbox &in)
 {
-  for (auto msg : in.allMsgs)
+  std::vector<Tweet *> tLine = in.getTimeline();
+  int size = (int)tLine.size();
+  while (size > 0)
   {
-    os << *msg.second << "\n";
+    os << *tLine[size - 1] << "\n";
+    tLine.pop_back();
+    size--;
   }
-  in.unread.clear();
   return os;
 }

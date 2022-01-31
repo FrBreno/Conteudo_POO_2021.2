@@ -29,15 +29,3 @@ T read_str(std::stringstream &ss)
 
   return dado;
 }
-
-// Mesma funcionalidade da função acima, mas trabalhando com vetor de ponteiros:
-template <typename T>
-std::string vec_ptr_to_string(std::vector<T> v, char delim)
-{
-  std::stringstream ss;
-  for (auto t : v)
-  {
-    ss << *t << delim;
-  }
-  return ss.str();
-}

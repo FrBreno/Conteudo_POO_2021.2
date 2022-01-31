@@ -5,6 +5,10 @@ User::User(const std::string &userName) : userName{userName} {}
 void User::follow(User *other)
 {
   auto key = other->userName;
+  if (this->userName == key)
+  {
+    throw std::runtime_error("Voce nao pode seguir a si mesmo.");
+  }
   if (this->following.find(key) != this->following.end())
   {
     throw std::runtime_error("Voce ja segue esse usuario.");
@@ -25,6 +29,8 @@ void User::unfollow(std::string userName)
 
   auto it_other = other->followers.find(this->userName);
   other->followers.erase(it_other);
+
+  this->inbox.rmMsgsFrom(userName);
 }
 
 void User::like(int twid)
@@ -32,12 +38,12 @@ void User::like(int twid)
   this->inbox.getTweet(twid)->like(this->userName);
 }
 
-void User::sendTweet(Message *tw)
+void User::sendTweet(Tweet *tw)
 {
-  this->inbox.store(tw);
+  this->inbox.storeInMyTweets(tw);
   for (auto &seguidores : this->followers)
   {
-    seguidores.second->inbox.receiveNew(tw);
+    seguidores.second->inbox.storeInTimeline(tw);
   }
 }
 
@@ -46,30 +52,50 @@ Inbox &User::getInbox()
   return this->inbox;
 }
 
+void User::unfollowAll()
+{
+  while ((int)this->following.size() > 0)
+  {
+    unfollow(this->following.begin()->second->userName);
+  }
+}
+
+void User::rejectAll()
+{
+  while ((int)this->followers.size() > 0)
+  {
+    auto it = this->followers.begin();
+    it->second->unfollow(this->userName);
+  }
+}
+
 std::ostream &operator<<(std::ostream &os, const User &user)
 {
+  int followingSize = (int)user.following.size();
+  int followersSize = (int)user.followers.size();
+
   os << user.userName << "\n";
-  os << "\tseguidos   [ ";
+  os << "\tseguidos   [";
 
   for (auto sigo : user.following)
   {
     os << sigo.second->userName;
-    if ((int)user.following.size() > 1)
+    if (followingSize > 1)
     {
-      os << ",";
+      os << ", ";
     }
-    os << " ";
+    followingSize--;
   }
 
-  os << "]\n\tseguidores [ ";
+  os << "]\n\tseguidores [";
   for (auto seguidores : user.followers)
   {
     os << seguidores.second->userName;
-    if ((int)user.followers.size() > 1)
+    if (followersSize > 1)
     {
-      os << ",";
+      os << ", ";
     }
-    os << " ";
+    followersSize--;
   }
   os << "]";
 

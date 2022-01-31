@@ -12,11 +12,13 @@ private:
 
 public:
   User(const std::string &userName);
-  void sendTweet(Message *tw);
   void follow(User *other);
+  Inbox &getInbox();
+  void sendTweet(Tweet *tw);
   void unfollow(std::string userName);
   void like(int twid);
-  Inbox &getInbox();
+  void unfollowAll();
+  void rejectAll();
 
   friend std::ostream &operator<<(std::ostream &os, const User &user);
 };

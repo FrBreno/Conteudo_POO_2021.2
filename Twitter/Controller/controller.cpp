@@ -1,8 +1,8 @@
 #include "controller.hpp"
 
-Message *Controller::createMsg(std::string username, std::string msg)
+Tweet *Controller::createMsg(std::string username, std::string msg)
 {
-  Message *message = new Message(this->nextTwid, username, msg);
+  Tweet *message = new Tweet(this->nextTwid, username, msg);
   this->nextTwid++;
   return message;
 }
@@ -34,8 +34,39 @@ User *Controller::getUser(std::string username)
 void Controller::sendTweet(std::string username, std::string msg)
 {
   User *user = getUser(username);
-  auto it = this->tweets[this->nextTwid] = std::make_shared<Message>(*createMsg(username, msg));
+  auto it = this->tweets[this->nextTwid] = std::make_shared<Tweet>(*createMsg(username, msg));
   user->sendTweet(&(*it));
+}
+
+void Controller::sendRt(std::string username, int twId, std::string msg)
+{
+  auto it_user = this->users.find(username);
+  if (it_user == this->users.end())
+  {
+    throw std::runtime_error("Usuario nao encontrado!");
+  }
+
+  sendTweet(username, msg);
+  Tweet *tweetRt = it_user->second->getInbox().getTweet(this->nextTwid - 1);
+  Tweet *tweet = it_user->second->getInbox().getTweet(twId);
+  tweetRt->setRt(tweet);
+}
+
+void Controller::rmUser(std::string username)
+{
+  auto it = this->users.find(username);
+  if (it == this->users.end())
+  {
+    throw std::runtime_error("Usuario nao encontrado.");
+  }
+  it->second->unfollowAll();
+  it->second->rejectAll();
+  auto tweets = it->second->getInbox().getMyTweets();
+  for (auto tweet : tweets)
+  {
+    tweet->setDeleted();
+  }
+  this->users.erase(it);
 }
 
 std::ostream &operator<<(std::ostream &os, const Controller &control)

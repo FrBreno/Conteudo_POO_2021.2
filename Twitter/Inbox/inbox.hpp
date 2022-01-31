@@ -1,4 +1,4 @@
-#include "../Message/message.hpp"
+#include "../Tweet/tweet.hpp"
 #include <map>
 #include <vector>
 #include <memory>
@@ -6,17 +6,17 @@
 class Inbox
 {
 private:
-  std::map<int, Message *> allMsgs;
-  std::map<int, Message *> unread;
+  std::map<int, Tweet *> timeline;
+  std::map<int, Tweet *> myTweets;
 
 public:
   Inbox();
-  std::vector<Message *> getUnread();
-  std::vector<Message *> getAll() const;
-  Message *getTweet(int id);
-
-  void receiveNew(Message *tweet);
-  void store(Message *tweet);
+  void storeInTimeline(Tweet *tweet);
+  void storeInMyTweets(Tweet *tweet);
+  std::vector<Tweet *> getTimeline() const;
+  std::vector<Tweet *> getMyTweets() const;
+  Tweet *getTweet(int id);
+  void rmMsgsFrom(const std::string &username);
 
   friend std::ostream &operator<<(std::ostream &os, Inbox &in);
 };
